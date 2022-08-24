@@ -1,13 +1,14 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {Route, Redirect, Switch} from 'react-router-dom'
+import {Context} from '../index'
 import {authRoutes, publicRoutes} from '../routes'
 import {MAIN_ROUTE} from '../utils/consts'
 
 const AppRouter = () => {
-    const isAuth = false
+    const {user} = useContext(Context)
     return (
         <Switch>
-            {isAuth &&
+            {user.isAuth &&
                 authRoutes.map(({path, Component}) => (
                     <Route exact key={path} path={path} component={Component} />
                 ))}
