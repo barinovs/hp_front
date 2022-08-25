@@ -2,7 +2,7 @@ import AdItem from './pages/AdItem'
 import Admin from './pages/Admin'
 import AdQueryPage from './pages/AdQueryPage'
 import Auth from './pages/Auth'
-import Main from './pages/Main'
+import MainPage from './pages/MainPage'
 import {
     ADMIN_ROUTE,
     AD_ITEM_ROUTE,
@@ -30,7 +30,7 @@ export const authRoutes = [
 export const publicRoutes = [
     {
         path: MAIN_ROUTE,
-        Component: Main,
+        Component: MainPage,
     },
     {
         path: LOGIN_ROUTE,

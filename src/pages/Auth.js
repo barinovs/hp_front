@@ -1,13 +1,16 @@
-import React from 'react'
+import {observer} from 'mobx-react-lite'
+import React, {useContext} from 'react'
 import {Button, Card, Container, Form, Row} from 'react-bootstrap'
 import {NavLink, useLocation} from 'react-router-dom'
+import {Context} from '..'
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
 
-const Auth = () => {
+const Auth = observer(() => {
     const location = useLocation()
     console.log(location)
     const isLogin = location.pathname === LOGIN_ROUTE
     console.log('isLogin', isLogin)
+    const {user} = useContext(Context)
     return (
         <Container
             className="d-flex justify-content-center align-items-center"
@@ -51,6 +54,9 @@ const Auth = () => {
                         <Button
                             variant="outline-success"
                             style={{width: '150px'}}
+                            onClick={() => {
+                                user.setIsAuth(true)
+                            }}
                         >
                             {isLogin ? 'Войти' : 'Регистрация'}
                         </Button>
@@ -59,6 +65,6 @@ const Auth = () => {
             </Card>
         </Container>
     )
-}
+})
 
 export default Auth
