@@ -5,6 +5,7 @@ import CreateAdQuery from '../components/modals/CreateAdQuery'
 import {getAllUsers} from '../http/userApi'
 import {getAdQueriesByUserId, getAllAdQueries} from '../http/adQueryApi'
 import {Context} from '..'
+import AdQueriesTable from '../components/AdQueriesTable'
 
 const Admin = observer(() => {
     const [adQueryVisible, setAdQueryVisible] = useState(false)
@@ -94,38 +95,7 @@ const Admin = observer(() => {
                         </Table>
                     </Tab>
                     <Tab eventKey="adQueries" title="Запросы">
-                        <Table striped bordered hover variant="dark">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>url</th>
-                                    <th>Описание</th>
-                                    <th>Создан:</th>
-                                    <th>Изменён:</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {adQueries.map((adQuery) => {
-                                    return (
-                                        <tr key={adQuery.id}>
-                                            <td>{adQuery.id}</td>
-                                            <td>{adQuery.url}</td>
-                                            <td>{adQuery.description}</td>
-                                            <td>
-                                                {new Date(
-                                                    adQuery.createdAt
-                                                ).toLocaleDateString()}
-                                            </td>
-                                            <td>
-                                                {new Date(
-                                                    adQuery.updatedAt
-                                                ).toLocaleDateString()}
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </Table>
+                        <AdQueriesTable arr={adQueries} />
                     </Tab>
                 </Tabs>
             ) : (

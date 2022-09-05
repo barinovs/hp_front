@@ -1,12 +1,24 @@
-import React, {useContext} from 'react'
-import {Container} from 'react-bootstrap'
+import React, {useContext, useEffect, useState} from 'react'
+import {Container, Table} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
 import {Context} from '..'
+import {getAdQueriesByUserId} from '../http/adQueryApi'
+import AdQueriesTable from '../components/AdQueriesTable'
 
 const MainPage = () => {
     const {user} = useContext(Context)
-    console.log('user.isAuth', user.isAuth)
+    const [adQueries, setAdQueries] = useState([])
+    const _getAdQueriesByUserId = async () => {
+        let _adQueries = await getAdQueriesByUserId(user.user.id)
+        setAdQueries(_adQueries)
+    }
+    console.log('adQueries', adQueries) //TODO убрать этот console.log
+
+    useEffect(() => {
+        _getAdQueriesByUserId()
+    }, [])
+
     return (
         <Container>
             {!user.isAuth ? (
@@ -17,7 +29,7 @@ const MainPage = () => {
                     для входа в закрытую часть сайта
                 </h4>
             ) : (
-                <h4>Закрытая часть</h4>
+                <AdQueriesTable arr={adQueries} />
             )}
         </Container>
     )
