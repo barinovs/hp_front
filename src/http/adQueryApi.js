@@ -12,3 +12,8 @@ export const getAllAdQueries = async () => {
     const adQueries = await response.data
     return adQueries
 }
+
+export const createAdQueryByAdmin = async (adQuery) => {
+    const {data} = await $authHost.post(`api/ad_query`, adQuery)
+    return data
+}

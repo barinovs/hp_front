@@ -11,6 +11,7 @@ const AdQueriesTable = ({arr}) => {
                     <th>Описание</th>
                     <th>Создан:</th>
                     <th>Изменён:</th>
+                    <th>Пользователь:</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,7 @@ const AdQueriesTable = ({arr}) => {
                                     adQuery.updatedAt
                                 ).toLocaleDateString()}
                             </td>
+                            <td>{adQuery?.user?.email}</td>
                         </tr>
                     )
                 })}

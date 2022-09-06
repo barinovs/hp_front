@@ -1,19 +1,21 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {Container, Table} from 'react-bootstrap'
+import {Button, Container, Table} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
 import {Context} from '..'
 import {getAdQueriesByUserId} from '../http/adQueryApi'
 import AdQueriesTable from '../components/AdQueriesTable'
+import CreateAdQuery from '../components/modals/CreateAdQuery'
+import {observer} from 'mobx-react-lite'
 
-const MainPage = () => {
+const MainPage = observer(() => {
     const {user} = useContext(Context)
     const [adQueries, setAdQueries] = useState([])
+    const [createAdQueryVisible, setCreateAdQueryVisible] = useState(false)
     const _getAdQueriesByUserId = async () => {
         let _adQueries = await getAdQueriesByUserId(user.user.id)
         setAdQueries(_adQueries)
     }
-    console.log('adQueries', adQueries) //TODO убрать этот console.log
 
     useEffect(() => {
         _getAdQueriesByUserId()
@@ -29,10 +31,30 @@ const MainPage = () => {
                     для входа в закрытую часть сайта
                 </h4>
             ) : (
-                <AdQueriesTable arr={adQueries} />
+                <div>
+                    {adQueries.length > 0 ? (
+                        <AdQueriesTable arr={adQueries} />
+                    ) : (
+                        <h4>Вы пока не добавили ни одного запроса...</h4>
+                    )}
+                    <Button
+                        variant="outline-dark"
+                        onClick={() => {
+                            setCreateAdQueryVisible(true)
+                        }}
+                    >
+                        Добавить
+                    </Button>
+                    <CreateAdQuery
+                        show={createAdQueryVisible}
+                        onHide={() => setCreateAdQueryVisible(false)}
+                        forAdmin={user.user.isAdmin}
+                        userId={user.user.id}
+                    />
+                </div>
             )}
         </Container>
     )
-}
+})
 
 export default MainPage
