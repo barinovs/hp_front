@@ -5,7 +5,7 @@ import {createAdQueryByAdmin} from '../../http/adQueryApi'
 import {getAllUsers} from '../../http/userApi'
 import {observer} from 'mobx-react-lite'
 
-const CreateAdQuery = ({show, onHide, forAdmin, userId}) => {
+const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [users, setUsers] = useState([])
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
@@ -73,6 +73,9 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId}) => {
                             url,
                             description,
                             userId: forAdmin ? selectedUser : userId,
+                        }).then((res) => {
+                            refreshAdQueries()
+                            onHide()
                         })
                     }
                 >

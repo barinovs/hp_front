@@ -66,6 +66,7 @@ const Admin = observer(() => {
                                     <th>Создан:</th>
                                     <th>Изменён:</th>
                                     <th>Роль</th>
+                                    <th>Телеграм</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,6 +89,7 @@ const Admin = observer(() => {
                                                 ).toLocaleDateString()}
                                             </td>
                                             <td>{user.roleId}</td>
+                                            <td>{user.telegram_id}</td>
                                         </tr>
                                     )
                                 })}

@@ -30,7 +30,11 @@ const NavBar = observer(() => {
                 </NavLink>
 
                 {user.isAuth ? (
-                    <Nav className="ml-auto" style={{color: 'white'}}>
+                    <Nav
+                        className="ml-auto d-flex align-items-center"
+                        style={{color: 'white'}}
+                    >
+                        <div>Вы авторизованы как {user.user.email}</div>
                         {user.isAdmin && (
                             <Button
                                 variant="outline-light"
@@ -39,6 +43,7 @@ const NavBar = observer(() => {
                                 Админ-панель
                             </Button>
                         )}
+
                         <Button
                             variant="outline-light"
                             className="ms-2"

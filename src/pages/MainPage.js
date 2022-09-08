@@ -50,6 +50,7 @@ const MainPage = observer(() => {
                         onHide={() => setCreateAdQueryVisible(false)}
                         forAdmin={user.user.isAdmin}
                         userId={user.user.id}
+                        refreshAdQueries={_getAdQueriesByUserId}
                     />
                 </div>
             )}

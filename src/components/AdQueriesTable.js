@@ -7,7 +7,7 @@ const AdQueriesTable = ({arr}) => {
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>url</th>
+                    {/* <th>url</th> */}
                     <th>Описание</th>
                     <th>Создан:</th>
                     <th>Изменён:</th>
@@ -19,7 +19,7 @@ const AdQueriesTable = ({arr}) => {
                     return (
                         <tr key={adQuery.id}>
                             <td>{adQuery.id}</td>
-                            <td>{adQuery.url}</td>
+                            {/* <td>{adQuery.url}</td> */}
                             <td>{adQuery.description}</td>
                             <td>
                                 {new Date(
