@@ -23,9 +23,10 @@ const Auth = observer(() => {
             } else {
                 data = await registration(email, password)
             }
-            user.setUser(user)
+            user.setUserData(data)
             user.setIsAuth(true)
             user.setIsAdmin(data.isAdmin)
+            user.setId(data.id)
 
             history.push(MAIN_ROUTE)
         } catch (e) {

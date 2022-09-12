@@ -9,7 +9,7 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [users, setUsers] = useState([])
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
-    const [selectedUser, setSelectedUser] = useState(0)
+    const [selectedUser, setSelectedUser] = useState(userId)
 
     useEffect(() => {
         getAllUsers().then((res) => {
@@ -29,7 +29,6 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                     <Form.Control
                         placeholder="Введите строку запроса"
                         className="mt-3 required"
-                        controlId="formValidationError1"
                         value={url}
                         onChange={(e) => {
                             setUrl(e.target.value)
@@ -48,6 +47,7 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                             className="mt-3"
                             onChange={(e) => {
                                 setSelectedUser(e.target.value)
+                                console.log('selectedUser', selectedUser) //TODO убрать этот console.log
                             }}
                         >
                             {users.map((item) => {
@@ -76,6 +76,8 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                         }).then((res) => {
                             refreshAdQueries()
                             onHide()
+                            setDescription('')
+                            setUrl('')
                         })
                     }
                 >
@@ -87,3 +89,6 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
 }
 
 export default CreateAdQuery
+
+// https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9&locationId=625650&radius=50&localPriority=1&params[1283]=14756&priceMin=600000&priceMax=850000&params[1375-to-int]=130000&params[1167]=19984&params[110907]=478239&params[697]=8856&params[696]=8854&isGeoProps=true&forceLocation=true&page=1&display=list&limit=25&presentationType=serp
+// Все авто Череповца ц.600-850, пробег до 130? <= 2 влад

@@ -2,23 +2,18 @@ import {observer} from 'mobx-react-lite'
 import React, {useContext} from 'react'
 import {Navbar, Nav, Container, Button} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
-import {Context} from '..'
-import {
-    ADMIN_ROUTE,
-    AD_QUERY_ROUTE,
-    LOGIN_ROUTE,
-    MAIN_ROUTE,
-} from '../utils/consts'
+import {Context} from '../index'
+import {ADMIN_ROUTE, LOGIN_ROUTE, MAIN_ROUTE} from '../utils/consts'
 import {useHistory} from 'react-router-dom'
 
 const NavBar = observer(() => {
     const {user} = useContext(Context)
     const history = useHistory()
 
-    console.log('isAdmin', user.isAdmin)
+    console.log('isAdmin', user.userData.isAdmin)
 
     const logOut = () => {
-        user.setUser({})
+        user.setUserData({})
         user.setIsAuth(false)
     }
 
@@ -34,8 +29,10 @@ const NavBar = observer(() => {
                         className="ml-auto d-flex align-items-center"
                         style={{color: 'white'}}
                     >
-                        <div>Вы авторизованы как {user.user.email}</div>
-                        {user.isAdmin && (
+                        <div className={'me-3'}>
+                            Вы авторизованы как {user.userData.email}
+                        </div>
+                        {user.userData.isAdmin && (
                             <Button
                                 variant="outline-light"
                                 onClick={() => history.push(ADMIN_ROUTE)}

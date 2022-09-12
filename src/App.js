@@ -14,7 +14,7 @@ const App = observer(() => {
     useEffect(() => {
         check()
             .then((data) => {
-                user.setUser(data)
+                user.setUserData(data)
                 user.setIsAdmin(data.isAdmin)
                 user.setIsAuth(true)
             })

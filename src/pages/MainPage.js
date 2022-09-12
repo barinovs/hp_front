@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {Button, Container, Table} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
-import {Context} from '..'
+import {Context} from '../index'
 import {getAdQueriesByUserId} from '../http/adQueryApi'
 import AdQueriesTable from '../components/AdQueriesTable'
 import CreateAdQuery from '../components/modals/CreateAdQuery'
@@ -13,7 +13,7 @@ const MainPage = observer(() => {
     const [adQueries, setAdQueries] = useState([])
     const [createAdQueryVisible, setCreateAdQueryVisible] = useState(false)
     const _getAdQueriesByUserId = async () => {
-        let _adQueries = await getAdQueriesByUserId(user.user.id)
+        let _adQueries = await getAdQueriesByUserId(user.userData.id)
         setAdQueries(_adQueries)
     }
 
@@ -48,8 +48,8 @@ const MainPage = observer(() => {
                     <CreateAdQuery
                         show={createAdQueryVisible}
                         onHide={() => setCreateAdQueryVisible(false)}
-                        forAdmin={user.user.isAdmin}
-                        userId={user.user.id}
+                        forAdmin={user.isAdmin}
+                        userId={user.userData.id}
                         refreshAdQueries={_getAdQueriesByUserId}
                     />
                 </div>
