@@ -20,6 +20,10 @@ const Admin = observer(() => {
         console.log('users', users) //TODO убрать этот console.log
     }
 
+    const refreshAdQueries = () => {
+        _getAllAdQueries()
+    }
+
     const _getAllAdQueries = async () => {
         let _adQueries = await getAllAdQueries()
         setAdQueries(_adQueries)
@@ -97,23 +101,27 @@ const Admin = observer(() => {
                         </Table>
                     </Tab>
                     <Tab eventKey="adQueries" title="Запросы">
-                        <AdQueriesTable arr={adQueries} />
+                        <AdQueriesTable
+                            arr={adQueries}
+                            refreshAdQueries={refreshAdQueries}
+                        />
+                        <Button
+                            onClick={() => setAdQueryVisible(true)}
+                            variant={'outline-dark'}
+                        >
+                            Добавить запрос
+                        </Button>
                     </Tab>
                 </Tabs>
             ) : (
                 <h2>Нет доступа</h2>
             )}
 
-            {/* <Button
-                onClick={() => setAdQueryVisible(true)}
-                variant={'outline-dark'}
-            >
-                Добавить запрос
-            </Button>
             <CreateAdQuery
                 show={adQueryVisible}
                 onHide={() => setAdQueryVisible(false)}
-            /> */}
+                forAdmin={true}
+            />
         </Container>
     )
 })

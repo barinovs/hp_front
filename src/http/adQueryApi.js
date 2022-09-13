@@ -17,3 +17,13 @@ export const createAdQueryByAdmin = async (adQuery) => {
     const {data} = await $authHost.post(`api/ad_query`, adQuery)
     return data
 }
+
+export const setActive = async (data) => {
+    const {res} = await $authHost.post(`api/ad_query/setActive`, data)
+    return res
+}
+
+export const deleteAdQuery = async (data) => {
+    const {res} = await $authHost.post(`api/ad_query/delete`, data)
+    return res
+}
