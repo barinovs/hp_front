@@ -30,3 +30,24 @@ export const getAllUsers = async () => {
     const users = await response.data
     return users
 }
+
+export const getTelegramId = async () => {
+    const response = await $authHost.get('api/user/getTgId')
+    const tgId = await response.data
+    return tgId
+}
+
+export const getUserData = async (userId) => {
+    const response = await $authHost.get(`api/user/${userId}`)
+    const userData = await response.data
+    return userData
+}
+
+export const updateTgId = async (userId, telegram_id) => {
+    const response = await $authHost.post(`api/user/updateTgId`, {
+        userId,
+        telegram_id,
+    })
+    const result = await response.data
+    return result
+}

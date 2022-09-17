@@ -3,6 +3,7 @@ import Admin from './pages/Admin'
 import AdQueryPage from './pages/AdQueryPage'
 import Auth from './pages/Auth'
 import MainPage from './pages/MainPage'
+import UserProfile from './pages/UserProfile'
 import {
     ADMIN_ROUTE,
     AD_ITEM_ROUTE,
@@ -10,6 +11,7 @@ import {
     LOGIN_ROUTE,
     MAIN_ROUTE,
     REGISTRATION_ROUTE,
+    USER_PROFILE_ROUTE,
 } from './utils/consts'
 
 export const authRoutes = [
@@ -24,6 +26,10 @@ export const authRoutes = [
     {
         path: AD_ITEM_ROUTE,
         Component: AdItem,
+    },
+    {
+        path: USER_PROFILE_ROUTE,
+        Component: UserProfile,
     },
 ]
 

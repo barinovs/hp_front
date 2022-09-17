@@ -3,7 +3,12 @@ import React, {useContext} from 'react'
 import {Navbar, Nav, Container, Button} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
 import {Context} from '../index'
-import {ADMIN_ROUTE, LOGIN_ROUTE, MAIN_ROUTE} from '../utils/consts'
+import {
+    ADMIN_ROUTE,
+    LOGIN_ROUTE,
+    MAIN_ROUTE,
+    USER_PROFILE_ROUTE,
+} from '../utils/consts'
 import {useHistory} from 'react-router-dom'
 
 const NavBar = observer(() => {
@@ -30,7 +35,13 @@ const NavBar = observer(() => {
                         style={{color: 'white'}}
                     >
                         <div className={'me-3'}>
-                            Вы авторизованы как {user.userData.email}
+                            Вы авторизованы как{' '}
+                            <NavLink
+                                to={USER_PROFILE_ROUTE}
+                                style={{color: 'white'}}
+                            >
+                                {user.userData.email}
+                            </NavLink>
                         </div>
                         {user.userData.isAdmin && (
                             <Button
