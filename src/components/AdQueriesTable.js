@@ -1,9 +1,10 @@
 import {observer} from 'mobx-react-lite'
 import React, {useContext, useState} from 'react'
-import {Form, Table} from 'react-bootstrap'
+import {Form, Pagination, Table} from 'react-bootstrap'
 import {Context} from '../index'
 import {deleteAdQuery, setActive} from '../http/adQueryApi'
 import DeleteAdQuery from './modals/DeleteAdQuery'
+import Pages from './Pages'
 
 const AdQueriesTable = observer(({arr, refreshAdQueries}) => {
     const {user} = useContext(Context)
@@ -28,6 +29,7 @@ const AdQueriesTable = observer(({arr, refreshAdQueries}) => {
 
     return (
         <div>
+            <Pages />
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
@@ -38,6 +40,7 @@ const AdQueriesTable = observer(({arr, refreshAdQueries}) => {
                         <th>Изменён:</th>
                         <th>Пользователь:</th>
                         <th>Активно:</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +94,7 @@ const AdQueriesTable = observer(({arr, refreshAdQueries}) => {
                                             width="16"
                                             height="16"
                                             fill="currentColor"
-                                            class="bi bi-trash"
+                                            className="bi bi-trash"
                                             viewBox="0 0 16 16"
                                             onClick={() => {
                                                 setShowDeleteAdQueryModal(true)
@@ -105,7 +108,7 @@ const AdQueriesTable = observer(({arr, refreshAdQueries}) => {
                                         >
                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                                             <path
-                                                fill-rule="evenodd"
+                                                fillRule="evenodd"
                                                 d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
                                             />
                                         </svg>
@@ -116,6 +119,7 @@ const AdQueriesTable = observer(({arr, refreshAdQueries}) => {
                     })}
                 </tbody>
             </Table>
+
             <DeleteAdQuery
                 show={showDeleteAdQueryModal}
                 onHide={() => setShowDeleteAdQueryModal(false)}

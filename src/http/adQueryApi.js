@@ -1,14 +1,18 @@
 import {$authHost, $host} from '.'
 import jwt_decode from 'jwt-decode'
 
-export const getAdQueriesByUserId = async (userId) => {
-    const response = await $authHost.get(`api/ad_query/${userId}`)
+export const getAdQueriesByUserId = async (userId, page, limit) => {
+    const response = await $authHost.get(`api/ad_query/${userId}`, {
+        params: {page, limit},
+    })
     const adQueries = await response.data
     return adQueries
 }
 
-export const getAllAdQueries = async () => {
-    const response = await $authHost.get(`api/ad_query`)
+export const getAllAdQueries = async (page, limit = 5) => {
+    const response = await $authHost.get(`api/ad_query`, {
+        params: {page, limit},
+    })
     const adQueries = await response.data
     return adQueries
 }

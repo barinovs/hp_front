@@ -13,6 +13,7 @@ const Admin = observer(() => {
     let [users, setUsers] = useState([])
     let [adQueries, setAdQueries] = useState([])
     const {user} = useContext(Context)
+    const {adQuery} = useContext(Context)
 
     const _getAllUsers = async () => {
         let _users = await getAllUsers()
@@ -25,19 +26,18 @@ const Admin = observer(() => {
     }
 
     const _getAllAdQueries = async () => {
-        let _adQueries = await getAllAdQueries()
-        setAdQueries(_adQueries)
-    }
-
-    const _getAdQueriesByUserId = async (id) => {
-        let _adQueries = await getAdQueriesByUserId(id)
-        setAdQueries(_adQueries)
-        console.log('_adQueries', _adQueries) //TODO убрать этот console.log
+        let data = await getAllAdQueries(adQuery.page, adQuery.limit)
+        setAdQueries(data.rows)
+        adQuery.setTotalCount(data.count)
     }
 
     useEffect(() => {
         _getAllUsers()
     }, [])
+
+    useEffect(() => {
+        _getAllAdQueries()
+    }, [adQuery.page])
 
     return (
         <Container className="d-flex flex-column mt-2 w-5">

@@ -10,16 +10,33 @@ import {observer} from 'mobx-react-lite'
 
 const MainPage = observer(() => {
     const {user} = useContext(Context)
+    const {adQuery} = useContext(Context)
     const [adQueries, setAdQueries] = useState([])
     const [createAdQueryVisible, setCreateAdQueryVisible] = useState(false)
     const _getAdQueriesByUserId = async () => {
-        let _adQueries = await getAdQueriesByUserId(user.userData.id)
+        let _adQueries = await getAdQueriesByUserId(user.userData.id, 1, 3)
         setAdQueries(_adQueries)
     }
 
     useEffect(() => {
-        _getAdQueriesByUserId()
+        getAdQueriesByUserId(user.userData.id, 1, adQuery.limit).then(
+            (data) => {
+                setAdQueries(data.rows)
+                adQuery.setTotalCount(data.count)
+            }
+        )
     }, [])
+
+    useEffect(() => {
+        getAdQueriesByUserId(
+            user.userData.id,
+            adQuery.page,
+            adQuery.limit
+        ).then((data) => {
+            setAdQueries(data.rows)
+            adQuery.setTotalCount(data.count)
+        })
+    }, [adQuery.page])
 
     return (
         <Container>

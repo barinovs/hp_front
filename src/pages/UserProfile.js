@@ -8,6 +8,8 @@ const UserProfile = observer(() => {
     const {user} = useContext(Context)
     const [email, setEmail] = useState(user.userData.email)
     const [telegramId, setTelegramId] = useState(user.userData.telegram_id)
+    const [alertMsg, setalertMsg] = useState({})
+    const [showAlert, setShowAlert] = useState(false)
 
     useEffect(() => {
         // getTelegramId(user.userData.id).then((res) => {
@@ -20,7 +22,14 @@ const UserProfile = observer(() => {
     }, [])
 
     const _updateTgId = async () => {
-        updateTgId(user.userData.id, telegramId)
+        const res = await updateTgId(user.userData.id, telegramId)
+        if (res.success) {
+            setalertMsg({variant: 'success', message: res.message})
+        } else {
+            setalertMsg({variant: 'danger', message: res.message})
+        }
+        setShowAlert(true)
+        setTimeout(() => setShowAlert(false), 3000)
     }
 
     return (
@@ -48,8 +57,8 @@ const UserProfile = observer(() => {
                     </Form>
                 </Col>
             </Row>
-            <Alert show={false} variant="success">
-                Запись успешно изменена
+            <Alert show={showAlert} variant={alertMsg.variant}>
+                {alertMsg.message}
             </Alert>
         </Container>
     )
