@@ -51,3 +51,12 @@ export const updateTgId = async (userId, telegram_id) => {
     const result = await response.data
     return result
 }
+
+export const setIsAdmin = async (userId, isAdminValue) => {
+    const response = await $authHost.post(`api/user/setIsAdmin`, {
+        userId,
+        isAdminValue,
+    })
+    const result = await response.data
+    return result
+}

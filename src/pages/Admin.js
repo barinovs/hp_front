@@ -2,7 +2,7 @@ import {observer} from 'mobx-react-lite'
 import React, {useState, useContext, useEffect} from 'react'
 import {Button, Container, Tab, Table, Tabs} from 'react-bootstrap'
 import CreateAdQuery from '../components/modals/CreateAdQuery'
-import {getAllUsers} from '../http/userApi'
+import {getAllUsers, setIsAdmin} from '../http/userApi'
 import {getAdQueriesByUserId, getAllAdQueries} from '../http/adQueryApi'
 import {Context} from '..'
 import AdQueriesTable from '../components/AdQueriesTable'
@@ -12,6 +12,7 @@ const Admin = observer(() => {
     const [key, setKey] = useState('users')
     let [users, setUsers] = useState([])
     let [adQueries, setAdQueries] = useState([])
+    const [isAdminChecked, setIsAdminChecked] = useState(false)
     const {user} = useContext(Context)
     const {adQuery} = useContext(Context)
 
@@ -29,6 +30,25 @@ const Admin = observer(() => {
         let data = await getAllAdQueries(adQuery.page, adQuery.limit)
         setAdQueries(data.rows)
         adQuery.setTotalCount(data.count)
+    }
+
+    const handleSetIsAdmin = async (userId, isAdminValue) => {
+        try {
+            const res = await setIsAdmin(userId, isAdminValue)
+            if (res.success) {
+                users = users.map((item) => {
+                    if (item.id === userId) {
+                        item.isAdmin = isAdminValue
+                    }
+                    return item
+                })
+                setUsers(users)
+                //alert(res.message)
+            }
+        } catch (e) {
+            console.log('e ', e.response.data.message) //FIXME Удалить этот console.log()
+            alert(e.response.data.message)
+        }
     }
 
     useEffect(() => {
@@ -74,26 +94,43 @@ const Admin = observer(() => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user) => {
+                                {users.map((_user) => {
                                     return (
-                                        <tr key={user.id}>
-                                            <td>{user.id}</td>
-                                            <td>{user.email}</td>
-                                            <td>
-                                                {user.isAdmin ? 'Да' : 'Нет'}
+                                        <tr key={_user.id}>
+                                            <td>{_user.id}</td>
+                                            <td>{_user.email}</td>
+                                            <td
+                                                style={{
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                <input
+                                                    type="checkBox"
+                                                    checked={_user.isAdmin}
+                                                    // checked={user?.isAdmin}
+                                                    onChange={(e) => {
+                                                        handleSetIsAdmin(
+                                                            _user.id,
+                                                            e.target.checked
+                                                        )
+                                                    }}
+                                                    style={{
+                                                        margin: '0 auto',
+                                                    }}
+                                                />
                                             </td>
                                             <td>
                                                 {new Date(
-                                                    user.createdAt
+                                                    _user.createdAt
                                                 ).toLocaleDateString()}
                                             </td>
                                             <td>
                                                 {new Date(
-                                                    user.updatedAt
+                                                    _user.updatedAt
                                                 ).toLocaleDateString()}
                                             </td>
-                                            <td>{user.roleId}</td>
-                                            <td>{user.telegram_id}</td>
+                                            <td>{_user.roleId}</td>
+                                            <td>{_user.telegram_id}</td>
                                         </tr>
                                     )
                                 })}
