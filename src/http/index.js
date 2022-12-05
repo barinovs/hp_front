@@ -9,6 +9,10 @@ const $authHost = axios.create({
     baseURL: REACT_APP_API_URL,
 })
 
+const $avitoHost = axios.create({
+    baseURL: 'https://m.avito.ru/',
+})
+
 const authInterceptor = (config) => {
     config.headers.authorization = `Bearer ${localStorage.getItem('token')}`
     return config
@@ -16,4 +20,4 @@ const authInterceptor = (config) => {
 
 $authHost.interceptors.request.use(authInterceptor)
 
-export {$host, $authHost}
+export {$host, $authHost, $avitoHost}

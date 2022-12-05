@@ -1,4 +1,4 @@
-import {$authHost, $host} from '.'
+import {$authHost, $host, $avitoHost} from '.'
 import jwt_decode from 'jwt-decode'
 
 export const getAdQueriesByUserId = async (userId, page, limit) => {
@@ -30,4 +30,11 @@ export const setActive = async (data) => {
 export const deleteAdQuery = async (data) => {
     const {res} = await $authHost.post(`api/ad_query/delete`, data)
     return res
+}
+
+export const getAvitoLocations = async (queryStr) => {
+    const response = await $host.get(`api/ad_query/getAvitoLocations`, {
+        params: {queryStr},
+    })
+    return response
 }
