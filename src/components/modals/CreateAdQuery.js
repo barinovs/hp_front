@@ -1,11 +1,14 @@
 import React, {useEffect, useState, useContext} from 'react'
-import {Button, Form} from 'react-bootstrap'
+import {Button, Form, Row} from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import {createAdQueryByAdmin, getAvitoLocations} from '../../http/adQueryApi'
 import {getAllUsers} from '../../http/userApi'
 import {observer} from 'mobx-react-lite'
 import axios from 'axios'
 import LocationsList from './LocationsList'
+import SelectSearch from 'react-select-search'
+import 'react-select-search/style.css'
+import {getAllCarMarks, getCarModels} from '../../http/carsApi'
 
 const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [users, setUsers] = useState([])
@@ -15,12 +18,26 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [selectedUser, setSelectedUser] = useState(userId)
     const [showLocationsList, setShowLocationsList] = useState(false)
     const [locationsList, setLocationsList] = useState([])
+    const [carsOptions, setCarsOptions] = useState([])
+    const [selectedCar, setSelectedCar] = useState('')
+    const [carModelsOptions, setCarModelsOptions] = useState([])
+    const [selectedCarModel, setSelectedCarModel] = useState('')
 
     useEffect(() => {
         getAllUsers().then((res) => {
             setUsers(res)
         })
+
+        getAllCarMarks().then((res) => {
+            setCarsOptions(res)
+        })
     }, [])
+
+    useEffect(() => {
+        getCarModels(selectedCar).then((res) => {
+            setCarModelsOptions(res)
+        })
+    }, [selectedCar])
 
     const handleLocationChoice = (location) => {
         setShowLocationsList(false)
@@ -69,6 +86,33 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                             }}
                             onFocus={() => {}}
                         />
+
+                        <Row>
+                            <SelectSearch
+                                options={carsOptions}
+                                value={selectedCar}
+                                name="carMark"
+                                placeholder="Выберите марку"
+                                search={true}
+                                onChange={(value) => {
+                                    setSelectedCar(value)
+                                }}
+                            />
+                        </Row>
+
+                        <Row>
+                            <SelectSearch
+                                options={carModelsOptions}
+                                value={selectedCarModel}
+                                name="carModel"
+                                placeholder="Выберите модель"
+                                search={true}
+                                onChange={(value) => {
+                                    setSelectedCarModel(value)
+                                }}
+                            />
+                        </Row>
+
                         {forAdmin && (
                             <Form.Select
                                 className="mt-3"
