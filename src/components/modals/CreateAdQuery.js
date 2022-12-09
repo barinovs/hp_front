@@ -14,6 +14,7 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [users, setUsers] = useState([])
     const [url, setUrl] = useState('')
     const [location, setLocation] = useState('')
+    const [locationId, setLocationId] = useState('')
     const [description, setDescription] = useState('')
     const [selectedUser, setSelectedUser] = useState(userId)
     const [showLocationsList, setShowLocationsList] = useState(false)
@@ -22,6 +23,10 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [selectedCar, setSelectedCar] = useState('')
     const [carModelsOptions, setCarModelsOptions] = useState([])
     const [selectedCarModel, setSelectedCarModel] = useState('')
+    // https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9&locationId=625390&radius=0&localPriority=1&priceMax=850000&params[110000]=329253&params[110001]=330812&params[110005][]=335695&params[110005][]=335693&params[110005][]=335694&params[110907]=478239&params[697]=8856&isGeoProps=true&forceLocation=true&page=1&lastStamp=1663793760&display=list&limit=25&presentationType=serp
+    const [queryStr, setQueryStr] = useState(
+        `https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9&locationId=`
+    )
 
     useEffect(() => {
         getAllUsers().then((res) => {
@@ -39,12 +44,16 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
         })
     }, [selectedCar])
 
-    const handleLocationChoice = (location) => {
+    const handleLocationChoice = (name, id) => {
         setShowLocationsList(false)
         setLocation(location)
+        setLocationId(id)
+        debugger //FIXME Удалить этот debugger
+        const s = queryStr + locationId
+        setQueryStr(s)
     }
 
-    const handleCityChange = async (queryStr) => {
+    const handleCityChange = async (queryStr, e) => {
         setLocation(queryStr)
         const {data} = await getAvitoLocations(queryStr)
         setLocationsList(data)
@@ -82,11 +91,28 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                             value={location}
                             onChange={(e) => {
                                 setShowLocationsList(true)
-                                handleCityChange(e.target.value)
+                                handleCityChange(e.target.value, e)
                             }}
                             onFocus={() => {}}
                         />
 
+                        <SelectSearch
+                            options={[]}
+                            value={location}
+                            name="location"
+                            placeholder="Выберите город"
+                            search={true}
+                            onChange={(value) => {
+                                // setLocation(value)
+                                console.log('value ', value) //FIXME Удалить этот console.log()
+                            }}
+                            onBlur={(e) => {
+                                console.log('e ', e) //FIXME Удалить этот console.log()
+                            }}
+                            onKeyUp={(e) => {
+                                console.log(e)
+                            }}
+                        />
                         <Row>
                             <SelectSearch
                                 options={carsOptions}
@@ -131,6 +157,7 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                             </Form.Select>
                         )}
                     </Form>
+                    <div>{queryStr}</div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="outline-danger" onClick={onHide}>

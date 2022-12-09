@@ -10,7 +10,7 @@ const LocationsList = ({items, handleLocationChoice, show}) => {
                         onClick={(e) => {
                             handleLocationChoice(item.name, item.id)
                         }}
-                        locationid={item.id}
+                        data-location-id={item.id}
                     >
                         {item.name}
                         <span style={{fontStyle: 'italic'}}>{item.parent}</span>
