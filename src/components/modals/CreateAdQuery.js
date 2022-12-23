@@ -6,9 +6,9 @@ import {getAllUsers} from '../../http/userApi'
 import {observer} from 'mobx-react-lite'
 import axios from 'axios'
 import LocationsList from './LocationsList'
-import SelectSearch from 'react-select-search'
 import 'react-select-search/style.css'
 import {getAllCarMarks, getCarModels} from '../../http/carsApi'
+import Select from 'react-select'
 
 const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [users, setUsers] = useState([])
@@ -21,12 +21,18 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [locationsList, setLocationsList] = useState([])
     const [carsOptions, setCarsOptions] = useState([])
     const [selectedCar, setSelectedCar] = useState('')
+    const [selectedCarLabel, setSelectedCarLabel] = useState('')
     const [carModelsOptions, setCarModelsOptions] = useState([])
     const [selectedCarModel, setSelectedCarModel] = useState('')
+    const [selectedCarModelLabel, setSelectedCarModelLabel] = useState('')
+    const [mileageMin, setMileageMin] = useState('')
+    const [mileageMax, setMileageMax] = useState('')
+    const [priceMin, setPriceMin] = useState('')
+    const [priceMax, setPriceMax] = useState('')
+    const [yearMin, setYearMin] = useState('')
+    const [yearMax, setYearMax] = useState('')
     // https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9&locationId=625390&radius=0&localPriority=1&priceMax=850000&params[110000]=329253&params[110001]=330812&params[110005][]=335695&params[110005][]=335693&params[110005][]=335694&params[110907]=478239&params[697]=8856&isGeoProps=true&forceLocation=true&page=1&lastStamp=1663793760&display=list&limit=25&presentationType=serp
-    const [queryStr, setQueryStr] = useState(
-        `https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9&locationId=`
-    )
+    const [queryStr, setQueryStr] = useState('')
 
     useEffect(() => {
         getAllUsers().then((res) => {
@@ -44,16 +50,58 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
         })
     }, [selectedCar])
 
-    const handleLocationChoice = (name, id) => {
+    useEffect(() => {
+        let query = queryStr
+        const locationQuery = locationId ? `&locationId=${locationId}` : ''
+        const carMarkQuery = selectedCar ? `&params[110000]=${selectedCar}` : ''
+        const carMModelQuery = selectedCarModel
+            ? `&params[110001]=${selectedCarModel}`
+            : ''
+
+        // Пробег С
+        const mileageMinQuery = mileageMin
+            ? `&params[1375-from-int]=${mileageMin}`
+            : ''
+        // Пробег По
+        const mileageMaxQuery = mileageMax
+            ? `&params[1375-to-int]=${mileageMax}`
+            : ''
+
+        // Год С
+        const yearMinQuery = yearMin ? `&params[1375-from-int]=${yearMin}` : ''
+        // Год По
+        const yearMaxQuery = yearMax ? `&params[1375-to-int]=${yearMax}` : ''
+        // Цена С
+        const priceMinQuery = priceMin
+            ? `&params[1375-from-int]=${priceMin}`
+            : ''
+        // Цена По
+        const priceMaxQuery = priceMax ? `&params[1375-to-int]=${priceMax}` : ''
+
+        query = `https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9${locationQuery}${carMarkQuery}${carMModelQuery}${priceMinQuery}${priceMaxQuery}${mileageMinQuery}${mileageMaxQuery}${yearMinQuery}${yearMaxQuery}`
+        setQueryStr(query)
+        setUrl(query)
+    }, [
+        locationId,
+        selectedCar,
+        selectedCarModel,
+        priceMin,
+        priceMax,
+        mileageMin,
+        mileageMax,
+        yearMax,
+        yearMin,
+    ])
+
+    const handleLocationChoice = (value, label) => {
         setShowLocationsList(false)
         setLocation(location)
-        setLocationId(id)
-        debugger //FIXME Удалить этот debugger
+        setLocationId(value)
         const s = queryStr + locationId
         setQueryStr(s)
     }
 
-    const handleCityChange = async (queryStr, e) => {
+    const handleCityChange = async (queryStr) => {
         setLocation(queryStr)
         const {data} = await getAvitoLocations(queryStr)
         setLocationsList(data)
@@ -85,59 +133,117 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                                 setDescription(e.target.value)
                             }}
                         />
-                        <Form.Control
-                            placeholder="Введите название города"
-                            className="mt-3"
-                            value={location}
-                            onChange={(e) => {
-                                setShowLocationsList(true)
-                                handleCityChange(e.target.value, e)
-                            }}
-                            onFocus={() => {}}
-                        />
 
-                        <SelectSearch
-                            options={[]}
-                            value={location}
-                            name="location"
-                            placeholder="Выберите город"
-                            search={true}
-                            onChange={(value) => {
-                                // setLocation(value)
-                                console.log('value ', value) //FIXME Удалить этот console.log()
-                            }}
-                            onBlur={(e) => {
-                                console.log('e ', e) //FIXME Удалить этот console.log()
-                            }}
-                            onKeyUp={(e) => {
-                                console.log(e)
-                            }}
-                        />
-                        <Row>
-                            <SelectSearch
+                        <Row className="mt-3">
+                            <Select
+                                placeholder="Введите название города"
+                                options={locationsList}
+                                onChange={({value, label}) => {
+                                    handleLocationChoice(value, label)
+                                }}
+                                onInputChange={(e) => {
+                                    console.log(e)
+                                    handleCityChange(e)
+                                }}
+                            ></Select>
+                        </Row>
+
+                        <Row className="mt-3">
+                            <Select
+                                placeholder="Введите марку автомобиля"
                                 options={carsOptions}
-                                value={selectedCar}
-                                name="carMark"
-                                placeholder="Выберите марку"
-                                search={true}
-                                onChange={(value) => {
+                                onChange={({value, label}) => {
                                     setSelectedCar(value)
+                                    setSelectedCarModel('')
+                                    setSelectedCarLabel(label)
                                 }}
-                            />
+                                text={selectedCarLabel}
+                            ></Select>
                         </Row>
 
-                        <Row>
-                            <SelectSearch
+                        <Row className="mt-3">
+                            <Select
+                                placeholder="Введите модель автомобиля"
                                 options={carModelsOptions}
-                                value={selectedCarModel}
-                                name="carModel"
-                                placeholder="Выберите модель"
-                                search={true}
-                                onChange={(value) => {
+                                onChange={({value, label}) => {
                                     setSelectedCarModel(value)
+                                    setSelectedCarModelLabel(label)
+                                }}
+                                text={selectedCarModelLabel}
+                            ></Select>
+                        </Row>
+
+                        <div className="d-flex flex-row">
+                            <Form.Control
+                                placeholder="Пробег от"
+                                className="mt-3 me-3"
+                                value={mileageMin}
+                                type="number"
+                                style={{width: '150px'}}
+                                onChange={(e) => {
+                                    setMileageMin(e.target.value)
                                 }}
                             />
-                        </Row>
+
+                            <Form.Control
+                                placeholder="Пробег до"
+                                className="mt-3"
+                                value={mileageMax}
+                                type="number"
+                                style={{width: '150px'}}
+                                onChange={(e) => {
+                                    setMileageMax(e.target.value)
+                                }}
+                            />
+                        </div>
+
+                        <div className="d-flex flex-row">
+                            <Form.Control
+                                placeholder="Цена от"
+                                className="mt-3 me-3"
+                                value={priceMin}
+                                type="number"
+                                style={{width: '150px'}}
+                                onChange={(e) => {
+                                    setPriceMin(e.target.value)
+                                }}
+                            />
+
+                            <Form.Control
+                                placeholder="Цена до"
+                                className="mt-3"
+                                value={priceMax}
+                                type="number"
+                                style={{width: '150px'}}
+                                onChange={(e) => {
+                                    setPriceMax(e.target.value)
+                                }}
+                            />
+                        </div>
+
+                        <div className="d-flex flex-row">
+                            <Form.Control
+                                placeholder="Год выпуска с"
+                                className="mt-3 me-3"
+                                value={yearMin}
+                                type="number"
+                                style={{width: '150px'}}
+                                onChange={(e) => {
+                                    setYearMin(e.target.value)
+                                }}
+                            />
+
+                            <Form.Control
+                                placeholder="Год выпуска по"
+                                className="mt-3"
+                                value={yearMax}
+                                type="number"
+                                style={{width: '150px'}}
+                                onChange={(e) => {
+                                    setYearMax(e.target.value)
+                                }}
+                            />
+                        </div>
 
                         {forAdmin && (
                             <Form.Select
@@ -157,9 +263,11 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                             </Form.Select>
                         )}
                     </Form>
-                    <div>{queryStr}</div>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="outline-danger" onClick={onHide}>
+                        Собрать строку
+                    </Button>
                     <Button variant="outline-danger" onClick={onHide}>
                         Закрыть
                     </Button>
@@ -182,11 +290,11 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                         Добавить
                     </Button>
                 </Modal.Footer>
-                <LocationsList
+                {/* <LocationsList
                     show={showLocationsList}
                     handleLocationChoice={handleLocationChoice}
                     items={locationsList}
-                ></LocationsList>
+                ></LocationsList> */}
             </Modal>
         </>
     )
