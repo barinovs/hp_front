@@ -31,7 +31,6 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
     const [priceMax, setPriceMax] = useState('')
     const [yearMin, setYearMin] = useState('')
     const [yearMax, setYearMax] = useState('')
-    // https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9&locationId=625390&radius=0&localPriority=1&priceMax=850000&params[110000]=329253&params[110001]=330812&params[110005][]=335695&params[110005][]=335693&params[110005][]=335694&params[110907]=478239&params[697]=8856&isGeoProps=true&forceLocation=true&page=1&lastStamp=1663793760&display=list&limit=25&presentationType=serp
     const [queryStr, setQueryStr] = useState('')
 
     useEffect(() => {
@@ -68,17 +67,15 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
             : ''
 
         // Год С
-        const yearMinQuery = yearMin ? `&params[1375-from-int]=${yearMin}` : ''
+        const yearMinQuery = yearMin ? `&params[188-from-int]=${yearMin}` : ''
         // Год По
-        const yearMaxQuery = yearMax ? `&params[1375-to-int]=${yearMax}` : ''
+        const yearMaxQuery = yearMax ? `&params[188-to-int]=${yearMax}` : ''
         // Цена С
-        const priceMinQuery = priceMin
-            ? `&params[1375-from-int]=${priceMin}`
-            : ''
+        const priceMinQuery = priceMin ? `&priceMin=${priceMin}` : ''
         // Цена По
-        const priceMaxQuery = priceMax ? `&params[1375-to-int]=${priceMax}` : ''
+        const priceMaxQuery = priceMax ? `&priceMax=${priceMax}` : ''
 
-        query = `https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9${locationQuery}${carMarkQuery}${carMModelQuery}${priceMinQuery}${priceMaxQuery}${mileageMinQuery}${mileageMaxQuery}${yearMinQuery}${yearMaxQuery}`
+        query = `https://m.avito.ru/api/11/items?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&categoryId=9${locationQuery}&radius=0&localPriority=1${carMarkQuery}${carMModelQuery}${priceMinQuery}${priceMaxQuery}${mileageMinQuery}${mileageMaxQuery}${yearMinQuery}${yearMaxQuery}&page=1&display=list&limit=25&presentationType=serp`
         setQueryStr(query)
         setUrl(query)
     }, [
@@ -101,9 +98,13 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
         setQueryStr(s)
     }
 
-    const handleCityChange = async (queryStr) => {
+    const handleLocationChange = async (queryStr) => {
         setLocation(queryStr)
-        const {data} = await getAvitoLocations(queryStr)
+        let {data} = await getAvitoLocations(queryStr)
+        data = data.map((item) => {
+            item.label = `${item.label} (${item.region.name})`
+            return item
+        })
         setLocationsList(data)
     }
 
@@ -117,14 +118,14 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Control
+                        {/* <Form.Control
                             placeholder="Введите строку запроса"
                             className="mt-3 required"
                             value={url}
                             onChange={(e) => {
                                 setUrl(e.target.value)
                             }}
-                        />
+                        /> */}
                         <Form.Control
                             placeholder="Введите описание для запроса"
                             className="mt-3"
@@ -143,7 +144,7 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                                 }}
                                 onInputChange={(e) => {
                                     console.log(e)
-                                    handleCityChange(e)
+                                    handleLocationChange(e)
                                 }}
                             ></Select>
                         </Row>
@@ -274,7 +275,8 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
 
                     <Button
                         variant="outline-dark"
-                        onClick={() =>
+                        onClick={() => {
+                            // debugger //FIXME Удалить этот debugger
                             createAdQueryByAdmin({
                                 url,
                                 description,
@@ -285,7 +287,7 @@ const CreateAdQuery = ({show, onHide, forAdmin, userId, refreshAdQueries}) => {
                                 setDescription('')
                                 setUrl('')
                             })
-                        }
+                        }}
                     >
                         Добавить
                     </Button>

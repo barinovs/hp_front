@@ -32,9 +32,9 @@ export const deleteAdQuery = async (data) => {
     return res
 }
 
-export const getAvitoLocations = async (queryStr) => {
+export const getAvitoLocations = async (q) => {
     const response = await $host.get(`api/ad_query/getAvitoLocations`, {
-        params: {queryStr},
+        params: {q},
     })
     return response
 }

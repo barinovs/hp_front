@@ -3,7 +3,7 @@ import {Button, Container, Table} from 'react-bootstrap'
 import {NavLink} from 'react-router-dom'
 import {LOGIN_ROUTE, REGISTRATION_ROUTE} from '../utils/consts'
 import {Context} from '../index'
-import {getAdQueriesByUserId} from '../http/adQueryApi'
+import {getAdQueriesByUserId, getAllAdQueries} from '../http/adQueryApi'
 import AdQueriesTable from '../components/AdQueriesTable'
 import CreateAdQuery from '../components/modals/CreateAdQuery'
 import {observer} from 'mobx-react-lite'
@@ -38,6 +38,13 @@ const MainPage = observer(() => {
         })
     }, [adQuery.page])
 
+    const refreshAdQueries = async () => {
+        // debugger //FIXME Удалить этот debugger
+        const data = await getAdQueriesByUserId(user.userData.id, 1, 10)
+        setAdQueries(data.rows)
+        adQuery.setTotalCount(data.count)
+    }
+
     return (
         <Container>
             {!user.isAuth ? (
@@ -50,7 +57,10 @@ const MainPage = observer(() => {
             ) : (
                 <div>
                     {adQueries.length > 0 ? (
-                        <AdQueriesTable arr={adQueries} />
+                        <AdQueriesTable
+                            arr={adQueries}
+                            refreshAdQueries={refreshAdQueries}
+                        />
                     ) : (
                         <h4>Вы пока не добавили ни одного запроса...</h4>
                     )}
@@ -67,7 +77,7 @@ const MainPage = observer(() => {
                         onHide={() => setCreateAdQueryVisible(false)}
                         forAdmin={user.isAdmin}
                         userId={user.userData.id}
-                        refreshAdQueries={_getAdQueriesByUserId}
+                        refreshAdQueries={refreshAdQueries}
                     />
                 </div>
             )}
